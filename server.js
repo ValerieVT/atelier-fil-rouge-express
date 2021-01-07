@@ -20,12 +20,38 @@ app.get('/api/recoltes/', (req, res) => {
   });
 });
 
+// affichage de la liste des légumes (sans doublon)
+app.get('/api/recoltes/vegetables', (req, res) => {
+  pool.query('SELECT DISTINCT vegetable FROM recolte', (err, results) => {
+    if (err) {
+      res.status(500).json({
+        error: err.message,
+      });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+// affichage de la liste des dates de récolte (sans doublon)
+app.get('/api/recoltes/dates', (req, res) => {
+  pool.query('SELECT DISTINCT DATE_FORMAT(date, "%d-%m-%Y") date FROM recolte', (err, results) => {
+    if (err) {
+      res.status(500).json({
+        error: err.message,
+      });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
 app.listen(port, (err, res) => {
   if (err) {
     res.status(500).json({
       error: err.message,
     });
   } else {
-    res.status(200).send(`Server is listening on port ${process.env.PORT}`);
+    console.log(`Server is listening on port ${process.env.PORT}`);
   }
 });
