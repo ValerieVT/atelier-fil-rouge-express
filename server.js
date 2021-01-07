@@ -46,6 +46,21 @@ app.get('/api/recoltes/dates', (req, res) => {
   });
 });
 
+// affichage des légumes dont le nom contient les paramètres de la requête
+app.get('/api/recoltes/vegetables/:vegetable', (req, res) => {
+  const researchForVegetable = `%${req.params.vegetable}%`;
+  pool.query('SELECT * FROM recolte WHERE vegetable LIKE ?', researchForVegetable, (err, results) => {
+    if (err) {
+      res.status(500).json({
+        error: err.message,
+      });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+
 app.listen(port, (err, res) => {
   if (err) {
     res.status(500).json({
