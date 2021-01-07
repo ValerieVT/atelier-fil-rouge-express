@@ -46,30 +46,40 @@ app.get('/api/recoltes/dates', (req, res) => {
   });
 });
 
-// affichage des légumes récoltés dont le nom contient les paramètres de la requête
-app.get('/api/recoltes/vegetables/:vegetable', (req, res) => {
-  const researchForVegetable = `%${req.params.vegetable}%`;
-  pool.query('SELECT * FROM recolte WHERE vegetable LIKE ?', researchForVegetable, (err, results) => {
+// route de recherche filtrée
+app.get('/api/recoltes/search', (req, res) => {
+  // initialisation des différents filtres
+  let sql = 'SELECT * FROM recolte WHERE 1=1';
+  const sqlValues = [];
+  // contient une chaîne de caractères
+  if (req.query.contains) {
+    const researchForContains = `%${req.query.contains}%`;
+    sql += ' AND vegetable LIKE ?';
+    sqlValues.push(researchForContains);
+  }
+  // commence par une chaîne de caractères
+  if (req.query.startswith) {
+    const researchForStartswith = `${req.query.startswith}%`;
+    sql += ` AND vegetable LIKE ?`;
+    sqlValues.push(researchForStartswith);
+  }
+  // filtre par date supérieure
+  if (req.query.recoltedafter) {
+    sql += ' AND date > ?';
+    sqlValues.push(req.query.recoltedafter);
+  }
+  // lancement de la requête
+  pool.query(sql, sqlValues, (err, results) => {
     if (err) {
       res.status(500).json({
         error: err.message,
       });
+    } else if (results.length === 0) {
+      res.status(404).send('Recolt not found');
+    } else if (results.length === 1) {
+      res.status(200).json(results[0]);
     } else {
-      res.json(results);
-    }
-  });
-});
-
-// affichage des récoltes aux dates supérieures à... (au format "YYYY-MM-DD")
-app.get('/api/recoltes/dates/:date', (req, res) => {
-  const researchAfterDate = `${req.params.date}`;
-  pool.query('SELECT * FROM recolte WHERE date > ?', researchAfterDate, (err, results) => {
-    if (err) {
-      res.status(500).json({
-        error: err.message,
-      });
-    } else {
-      res.json(results);
+      res.status(200).json(results);
     }
   });
 });
