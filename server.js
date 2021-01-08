@@ -148,7 +148,7 @@ app.post('/api/recoltes', (req, res) => {
     if (err) {
       res.status(500).json({
         error: err.message,
-      })
+      });
     } else {
       return pool.query('SELECT * FROM recolte WHERE id = ?', results.insertId, (err2, records) => {
         if (err2) {
@@ -177,8 +177,8 @@ app.put('/api/recoltes/:id', (req, res) => {
   `, [req.body, req.params.id], (err, results) => {
     if (err) {
       res.status(500).json({
-        error: err.message
-      })
+        error: err.message,
+      });
     } else if (results.length === 0) {
       res.status(401).send('Cet id n’est pas en base de données.');
     } else {
