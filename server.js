@@ -216,7 +216,7 @@ app.put('/api/recoltes/overages/:id', (req, res) => {
       } else {
         toggleOverage = 1;
       }
-      pool.query('UPDATE recolte SET overage=? WHERE id = ?', [toggleOverage, req.params.id], (err2, results2) => {
+      pool.query('UPDATE recolte SET overage=? WHERE id = ?', [toggleOverage, req.params.id], (err2) => {
         if (err2) {
           return res.status(500).json({
             error: err2.message,
