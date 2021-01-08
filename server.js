@@ -33,9 +33,65 @@ app.get('/api/recoltes/vegetables', (req, res) => {
   });
 });
 
+// affichage de la liste des légumes (sans doublon)
+// PAR ORDRE ASCENDANT
+app.get('/api/recoltes/vegetables/asc', (req, res) => {
+  pool.query('SELECT DISTINCT vegetable FROM recolte ORDER BY vegetable ASC', (err, results) => {
+    if (err) {
+      res.status(500).json({
+        error: err.message,
+      });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+// affichage de la liste des légumes (sans doublon)
+// PAR ORDRE DESCENDANT
+app.get('/api/recoltes/vegetables/desc', (req, res) => {
+  pool.query('SELECT DISTINCT vegetable FROM recolte ORDER BY vegetable DESC', (err, results) => {
+    if (err) {
+      res.status(500).json({
+        error: err.message,
+      });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
 // affichage de la liste des dates de récolte (sans doublon)
 app.get('/api/recoltes/dates', (req, res) => {
-  pool.query('SELECT DISTINCT DATE_FORMAT(date, "%d-%m-%Y") date FROM recolte', (err, results) => {
+  pool.query('SELECT DISTINCT DATE_FORMAT(date, "%Y-%m-%d") date FROM recolte', (err, results) => {
+    if (err) {
+      res.status(500).json({
+        error: err.message,
+      });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+// affichage de la liste des dates de récolte (sans doublon)
+// PAR ORDRE ASCENDANT
+app.get('/api/recoltes/dates/asc', (req, res) => {
+  pool.query('SELECT DISTINCT DATE_FORMAT(date, "%Y-%m-%d") date FROM recolte ORDER BY date ASC', (err, results) => {
+    if (err) {
+      res.status(500).json({
+        error: err.message,
+      });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+// affichage de la liste des dates de récolte (sans doublon)
+// PAR ORDRE DESCENDANT
+app.get('/api/recoltes/dates/desc', (req, res) => {
+  pool.query('SELECT DISTINCT DATE_FORMAT(date, "%Y-%m-%d") date FROM recolte ORDER BY date DESC', (err, results) => {
     if (err) {
       res.status(500).json({
         error: err.message,
