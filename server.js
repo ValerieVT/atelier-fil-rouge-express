@@ -229,6 +229,19 @@ app.put('/api/recoltes/overages/:id', (req, res) => {
   });
 });
 
+// suppression d'une récolte en BDD
+app.delete('/api/recoltes/:id', (req, res) => {
+  pool.query('DELETE FROM recolte WHERE id=?', Number(req.params.id), (err) => {
+    if (err) {
+      res.status(500).json({
+        error: err.message,
+      });
+    } else {
+      res.status(200).send('Recolt is deleted.');
+    }
+  });
+});
+
 app.listen(port, (err, res) => {
   if (err) {
     res.status(500).json({
