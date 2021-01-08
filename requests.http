@@ -1,0 +1,3 @@
+### DELETE
+DELETE http://localhost:4000/api/recoltes/fullconsumption/1
+

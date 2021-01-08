@@ -242,6 +242,19 @@ app.delete('/api/recoltes/:id', (req, res) => {
   });
 });
 
+// suppression des récoltes en fonction du booléen de la colonne overage
+app.delete('/api/recoltes/fullconsumption/:overage', (req, res) => {
+  pool.query('DELETE FROM recolte WHERE overage=?', req.params.overage, (err) => {
+    if (err) {
+      res.status(500).json({
+        error: err.stack,
+      });
+    } else {
+      res.status(200).send(`Recolts which overage is ${req.params.overage} are deleted.`);
+    }
+  });
+});
+
 app.listen(port, (err, res) => {
   if (err) {
     res.status(500).json({
