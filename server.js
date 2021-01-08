@@ -116,7 +116,7 @@ app.get('/api/recoltes/search', (req, res) => {
   // commence par une chaîne de caractères
   if (req.query.startswith) {
     const researchForStartswith = `${req.query.startswith}%`;
-    sql += ` AND vegetable LIKE ?`;
+    sql += ' AND vegetable LIKE ?';
     sqlValues.push(researchForStartswith);
   }
   // filtre par date supérieure
