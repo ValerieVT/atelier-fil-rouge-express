@@ -180,7 +180,7 @@ app.put('/api/recoltes/:id', (req, res) => {
         error: err.message
       })
     } else if (results.length === 0) {
-      res.status(401).send('Cet id n’est pas en base de données.')
+      res.status(401).send('Cet id n’est pas en base de données.');
     } else {
       return pool.query('SELECT * FROM recolte WHERE id = ?', req.params.id, (err2, results2) => {
         if (err2) {
@@ -196,6 +196,34 @@ app.put('/api/recoltes/:id', (req, res) => {
           .status(201)
           .set('Location', location)
           .json(modifiedRecolt);
+      });
+    }
+  });
+});
+
+// toggle du booléen d'une récolte déjà en en BDD
+app.put('/api/recoltes/overages/:id', (req, res) => {
+  pool.query('SELECT * FROM recolte WHERE id = ?', [req.params.id], (err, results) => {
+    if (err) {
+      res.status(500).json({
+        error: err.message,
+      });
+    } else {
+      const modifiedRecolt = results[0];
+      let toggleOverage = modifiedRecolt.overage;
+      if (toggleOverage === 1) {
+        toggleOverage = 0;
+      } else {
+        toggleOverage = 1;
+      }
+      pool.query('UPDATE recolte SET overage=? WHERE id = ?', [toggleOverage, req.params.id], (err2, results2) => {
+        if (err2) {
+          return res.status(500).json({
+            error: err2.message,
+            sql: err2.sql,
+          });
+        }
+        return res.status(201).json(modifiedRecolt);
       });
     }
   });
